@@ -1,16 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
-URL = 'https://simulationhockey.com/forumdisplay.php?fid=5'
+def get_smjhl_players(urls):
+    """use the urls provided in the json to get each player's information"""
 
-page = requests.get(URL)
-
-soup = BeautifulSoup(page.content, 'html.parser')
-
-#print(soup.prettify())
-
-#print(soup.find_all('div'))
-
-for div in soup.find_all('div', class_="float_left"):
-    soup = div
-    print(div)
+def main():
+    """main"""
+    urls = "roster_urls.json"
+    get_smjhl_players(urls)
