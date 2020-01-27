@@ -10,7 +10,7 @@ def get_smjhl_players(url_file, smjhl_players_csv):
         pass
         # get each player page URL
         # for each player in player_url_list
-        #     player_dict_list = get_player_stats(team)
+        #     player_dict_list = get_player_stats(player)
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
 
 
@@ -22,6 +22,11 @@ def get_roster_url(url_file, league):
         for team in data['Team Roster URLs'][league]:  # go through the json and get the urls for each roster
             return_list.append((team, data['Team Roster URLs'][league][team]))  # add tuple of team name and url to list
     return return_list
+
+
+def get_player_urls(team_roster_url):
+    """Returns a list of player page URLs from the team roster page"""
+    pass
 
 
 def get_player_stats(name_url):
