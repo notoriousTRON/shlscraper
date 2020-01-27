@@ -1,12 +1,18 @@
-import requests
+import requests, json, csv
 from bs4 import BeautifulSoup
-import json
 
-def get_smjhl_players(url_file):
+
+def get_smjhl_players(url_file, smjhl_players_csv):
     """use the urls provided in the json to get each player's information"""
-    url_list = get_roster_url(url_file, 'SMJHL')
-    for team in url_list:
-        print(team)
+    team_url_list = get_roster_url(url_file, 'SMJHL')
+    player_dict_list = list()  # list that will hold all of the player info dicts to be put into a csv
+    for team in team_url_list:  # For each team in the list
+        pass
+        # get each player page URL
+        # for each player in player_url_list
+        #     player_dict_list = get_player_stats(team)
+    # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
+
 
 def get_roster_url(url_file, league):
     """Get the roster URLs for the specified league"""
@@ -17,9 +23,18 @@ def get_roster_url(url_file, league):
             return_list.append((team, data['Team Roster URLs'][league][team]))  # add tuple of team name and url to list
     return return_list
 
+
+def get_player_stats(name_url):
+    """Use the given url to find and get all of the stats. Returns a dictionary"""
+    pass
+
+
 def main():
     """main"""
     url_file = "roster_urls.json"
-    get_smjhl_players(url_file)
+    smjhl_players_csv = "smjhl_players.csv"
+    shl_players_csv = "shl_players.csv"
+    get_smjhl_players(url_file, smjhl_players_csv)
+
 
 main()
