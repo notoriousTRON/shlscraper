@@ -11,7 +11,16 @@ def get_smjhl_players(url_file, smjhl_players_csv):
         for player in player_url_list:  # for each player in player_url_list
             player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
-    print(player_dict_list)
+    csv_file = "data.csv"
+    csv_columns = player_dict_list[0].keys()
+    try:
+        with open(csv_file, 'w+') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+            writer.writeheader()
+            for data in player_dict_list:
+                writer.writerow(data)
+    except IOError:
+        print("I/O error")
 
 
 def get_roster_url(url_file, league):
