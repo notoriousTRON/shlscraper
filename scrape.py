@@ -9,7 +9,7 @@ def get_smjhl_players(url_file, smjhl_players_csv):
     for team in team_url_list:  # For each team in the list
         player_url_list = get_player_urls(team[1])  # get each player page URL
         for player in player_url_list:  # for each player in player_url_list
-            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player))
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     print(player_dict_list)
 
@@ -42,13 +42,71 @@ def get_player_urls(team_roster_url):
     return return_list
 
 
-def get_player_stats(name_url):
+def get_player_stats(name_url, team):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
+    player = dict()
+    player['Team'] = team
     player_page = requests.get(name_url)
     soup = BeautifulSoup(player_page.content, 'html.parser')
     post = soup.find_all('div', 'post_body scaleimages')[0]
-    print(post.text)  # now I just need to do something with this text data
-    return {'word': 'thing'}  # placeholder, obviously
+    post_text = post.text.split('\n')  # split the text from the body up into rows for easy iteration
+    for line in post_text:
+        # why don't switch statements exist in Python???????
+        if line.startswith('First Name'):
+            player['First Name'] = line.split(': ')[1]  # this gets the first name from the first name line
+        elif line.startswith('Last Name'):
+            player['Last Name'] = line.split(': ')[1]  # this gets the first name from the last name line
+        elif line.startswith('Position'):
+            player['Position'] = line.split(': ')[1]  # this gets the player position
+        elif line.startswith('Shoots'):
+            player['Shoots'] = line.split(': ')[1]  # this gets the player shooting hand
+        elif line.startswith('Recruited'):
+            player['Recruited by'] = line.split(': ')[1]  # this gets where they were recruited (if applicable)
+        elif line.startswith('Player Render'):
+            player['Player Render'] = line.split(': ')[1]  # this gets the player render
+        elif line.startswith('Jersey Number'):
+            player['Jersey Number'] = line.split(': ')[1]  # this gets the player Jersey Number
+        elif line.startswith('Height'):
+            player['Height'] = line.split(': ')[1]  # this gets the player height
+        elif line.startswith('Weight'):
+            player['Weight'] = line.split(': ')[1]  # this gets the player weight
+        elif line.startswith('Birthplace'):
+            player['Birthplace'] = line.split(': ')[1]  # this gets the player birthplace
+        elif line.startswith('Player Type'):
+            player['Player Type'] = line.split(': ')[1]  # this gets the player type
+        elif line.startswith('Strengths'):
+            player['Strengths'] = line.split(': ')[1]  # this gets the player strengths
+        elif line.startswith('Weakness'):
+            player['Weakness'] = line.split(': ')[1]  # this gets the player weakness
+        elif line.startswith('Points Available'):
+            player['Points Available'] = line.split(': ')[1]  # this gets the amount of points the player has available
+        elif line.startswith('CK'):
+            player['CK'] = line.split(': ')[1]  # this gets the player Checking
+        elif line.startswith('FG'):
+            player['FG'] = line.split(': ')[1]  # this gets the player fighting
+        elif line.startswith('DI'):
+            player['DI'] = line.split(': ')[1]  # this gets the player Discipline
+        elif line.startswith('SK'):
+            player['SK'] = line.split(': ')[1]  # this gets the player skating
+        elif line.startswith('ST'):
+            player['ST'] = line.split(': ')[1]  # this gets the player strength
+        elif line.startswith('EN'):
+            player['EN'] = line.split(': ')[1]  # this gets the player endurance
+        elif line.startswith('DU'):
+            player['DU'] = line.split(': ')[1]  # this gets the player durability
+        elif line.startswith('PH'):
+            player['PH'] = line.split(': ')[1]  # this gets the player Puck handling
+        elif line.startswith('FO'):
+            player['FO'] = line.split(': ')[1]  # this gets the player face off
+        elif line.startswith('PA'):
+            player['PA'] = line.split(': ')[1]  # this gets the player Passing
+        elif line.startswith('SC'):
+            player['SC'] = line.split(': ')[1]  # this gets the player scoring
+        elif line.startswith('DF'):
+            player['DF'] = line.split(': ')[1]  # this gets the player defence
+        elif line.startswith('PS'):
+            player['PS'] = line.split(': ')[1]  # this gets the player penalty shot
+    return player  # return the player
 
 
 def main():
