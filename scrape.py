@@ -161,7 +161,10 @@ def get_player_stats(name_url, team):
             except:
                 player['Weakness'] = ''
         elif line.startswith('Points Available'):
-            player['Points Available'] = line.split(': ')[1]  # this gets the amount of points the player has available
+            try:
+                player['Points Available'] = line.split(':')[1].strip()  # this gets the amount of points the player has available
+            except:
+                player['Points Available'] = '0'
         elif line.startswith('CK'):
             player['CK'] = line.split(': ')[1]  # this gets the player Checking
         elif line.startswith('FG'):
