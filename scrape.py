@@ -1,5 +1,34 @@
-import requests, json, csv
+import requests, json, csv, random
 from bs4 import BeautifulSoup
+
+
+user_agent_list = [
+   # Chrome
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+    # Firefox
+    'Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
+    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)',
+    'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)'
+]
 
 
 def get_smjhl_players(url_file, smjhl_players_csv):
@@ -39,7 +68,9 @@ def get_player_urls(team_roster_url):
     page = 1
     return_list = list()
     while has_next:  # this loop ensures that all pages of the roster are hit
-        roster_page = requests.get(team_roster_url + '&page=' + str(page))
+        user_agent = random.choice(user_agent_list)
+        headers = {'User-Agent': user_agent}
+        roster_page = requests.get(team_roster_url + '&page=' + str(page), headers=headers)
         soup = BeautifulSoup(roster_page.content, 'html.parser')
         smaller_soup = soup.find_all('tr', 'inline_row')
         for section in smaller_soup:
@@ -56,7 +87,9 @@ def get_player_stats(name_url, team):
     print(team)
     player = dict()
     player['Team'] = team
-    player_page = requests.get(name_url)
+    user_agent = random.choice(user_agent_list)
+    headers = {'User-Agent': user_agent}
+    player_page = requests.get(name_url, headers=headers)
     soup = BeautifulSoup(player_page.content, 'html.parser')
     post = soup.find_all('div', 'post_body scaleimages')[0]
     post_text = post.text.split('\n')  # split the text from the body up into rows for easy iteration
@@ -73,18 +106,30 @@ def get_player_stats(name_url, team):
             except:
                 player['Last Name'] = ''
         elif line.startswith('Position'):
-            player['Position'] = line.split(': ')[1]  # this gets the player position
+            try:
+                player['Position'] = line.split(':')[1].strip()  # this gets the player position
+            except:
+                player['Position'] = ''
         elif line.startswith('Shoots'):
-            player['Shoots'] = line.split(': ')[1]  # this gets the player shooting hand
+            try:
+                player['Shoots'] = line.split(':')[1].strip()  # this gets the player shooting hand
+            except:
+                player['Shoots'] = ''
         elif line.startswith('Recruited'):
             try:
                 player['Recruited by'] = line.split(':')[1].strip()  # this gets where they were recruited (if applicable)
             except:
                 player['Recruited by'] = ''
         elif line.startswith('Player Render'):
-            player['Player Render'] = line.split(': ')[1]  # this gets the player render
+            try:
+                player['Player Render'] = line.split(':')[1].strip()  # this gets the player render
+            except:
+                player['Player Render'] = ''
         elif line.startswith('Jersey Number'):
-            player['Jersey Number'] = line.split(': ')[1]  # this gets the player Jersey Number
+            try:
+                player['Jersey Number'] = line.split(':')[1].strip()  # this gets the player Jersey Number
+            except:
+                player['Jersey Number'] = ''
         elif line.startswith('Height'):
             try:
                 player['Height'] = line.split(':')[1].strip()  # this gets the player height
@@ -96,13 +141,25 @@ def get_player_stats(name_url, team):
             except:
                 player['Weight'] = ''
         elif line.startswith('Birthplace'):
-            player['Birthplace'] = line.split(': ')[1]  # this gets the player birthplace
+            try:
+                player['Birthplace'] = line.split(':')[1].strip()  # this gets the player birthplace
+            except:
+                player['Birthplace'] = ''
         elif line.startswith('Player Type'):
-            player['Player Type'] = line.split(': ')[1]  # this gets the player type
+            try:
+                player['Player Type'] = line.split(':')[1].strip()  # this gets the player type
+            except:
+                player['Player Type'] = ''
         elif line.startswith('Strengths'):
-            player['Strengths'] = line.split(': ')[1]  # this gets the player strengths
+            try:
+                player['Strengths'] = line.split(':')[1].strip()  # this gets the player strengths
+            except:
+                player['Strengths'] = ''
         elif line.startswith('Weakness'):
-            player['Weakness'] = line.split(': ')[1]  # this gets the player weakness
+            try:
+                player['Weakness'] = line.split(':')[1].strip()  # this gets the player weakness
+            except:
+                player['Weakness'] = ''
         elif line.startswith('Points Available'):
             player['Points Available'] = line.split(': ')[1]  # this gets the amount of points the player has available
         elif line.startswith('CK'):
