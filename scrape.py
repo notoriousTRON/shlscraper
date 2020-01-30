@@ -53,6 +53,7 @@ def get_player_urls(team_roster_url):
 
 def get_player_stats(name_url, team):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
+    print(team)
     player = dict()
     player['Team'] = team
     player_page = requests.get(name_url)
@@ -62,23 +63,38 @@ def get_player_stats(name_url, team):
     for line in post_text:
         # why don't switch statements exist in Python???????
         if line.startswith('First Name'):
-            player['First Name'] = line.split(': ')[1]  # this gets the first name from the first name line
+            try:
+                player['First Name'] = line.split(':')[1].strip()  # this gets the first name from the first name line
+            except:
+                player['First Name'] = ''
         elif line.startswith('Last Name'):
-            player['Last Name'] = line.split(': ')[1]  # this gets the first name from the last name line
+            try:
+                player['Last Name'] = line.split(':')[1].strip()  # this gets the first name from the last name line
+            except:
+                player['Last Name'] = ''
         elif line.startswith('Position'):
             player['Position'] = line.split(': ')[1]  # this gets the player position
         elif line.startswith('Shoots'):
             player['Shoots'] = line.split(': ')[1]  # this gets the player shooting hand
         elif line.startswith('Recruited'):
-            player['Recruited by'] = line.split(': ')[1]  # this gets where they were recruited (if applicable)
+            try:
+                player['Recruited by'] = line.split(':')[1].strip()  # this gets where they were recruited (if applicable)
+            except:
+                player['Recruited by'] = ''
         elif line.startswith('Player Render'):
             player['Player Render'] = line.split(': ')[1]  # this gets the player render
         elif line.startswith('Jersey Number'):
             player['Jersey Number'] = line.split(': ')[1]  # this gets the player Jersey Number
         elif line.startswith('Height'):
-            player['Height'] = line.split(': ')[1]  # this gets the player height
+            try:
+                player['Height'] = line.split(':')[1].strip()  # this gets the player height
+            except:
+                player['Height'] = ''
         elif line.startswith('Weight'):
-            player['Weight'] = line.split(': ')[1]  # this gets the player weight
+            try:
+                player['Weight'] = line.split(':')[1].strip()  # this gets the player weight
+            except:
+                player['Weight'] = ''
         elif line.startswith('Birthplace'):
             player['Birthplace'] = line.split(': ')[1]  # this gets the player birthplace
         elif line.startswith('Player Type'):
