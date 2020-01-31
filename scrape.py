@@ -42,14 +42,11 @@ def get_smjhl_players(url_file, smjhl_players_csv):
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     csv_file = "data.csv"
     csv_columns = player_dict_list[0].keys()
-    try:
-        with open(csv_file, 'w+') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
-            writer.writeheader()
-            for data in player_dict_list:
-                writer.writerow(data)
-    except IOError:
-        print("I/O error")
+    with open(csv_file, 'w+', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+        writer.writeheader()
+        for data in player_dict_list:
+            writer.writerow(data)
 
 
 def get_roster_url(url_file, league):
@@ -84,15 +81,54 @@ def get_player_urls(team_roster_url):
 
 def get_player_stats(name_url, team):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
-    print(team)
+    #print(team)
     player = dict()
     player['Team'] = team
     user_agent = random.choice(user_agent_list)
     headers = {'User-Agent': user_agent}
     player_page = requests.get(name_url, headers=headers)
     soup = BeautifulSoup(player_page.content, 'html.parser')
+
+    # Get the Position, TPE, and Draft Class
+    position_and_class = soup.find_all('td', 'thead')[1].strong.text
+    tpe = str()
+    draft_class = str()
+    position = str()
+
+    if position_and_class.__contains__(' C ') or position_and_class.__contains__(
+            ' Center ') or position_and_class.__contains__(' CENTER '):
+        position = 'C'
+    if position_and_class.__contains__(' LW ') or position_and_class.__contains__(
+            ' Left Wing ') or position_and_class.__contains__(' LEFT WING '):
+        position = 'LW'
+    if position_and_class.__contains__(' RW ') or position_and_class.__contains__(
+            ' Right Wing ') or position_and_class.__contains__(' RIGHT WING '):
+        position = 'RW'
+    if position_and_class.__contains__(' D ') or position_and_class.__contains__(
+            ' Defense ') or position_and_class.__contains__(' DEFENSE '):
+        position = 'D'
+    if position_and_class.__contains__(' G ') or position_and_class.__contains__(
+            ' Goalie ') or position_and_class.__contains__(' GOALIE '):
+        position = 'G'
+
+    draft_class = position_and_class.split()[0].strip('[').strip(']')
+    try:
+        tpe = soup.find_all('td', 'thead')[1].small.text
+        if len(tpe.split()) >= 0:
+            tpe = tpe.split()[1]
+        else:
+            print(len(tpe.split()))
+    except:
+        tpe = 'Calculate it yourself!'
+
+
     post = soup.find_all('div', 'post_body scaleimages')[0]
     post_text = post.text.split('\n')  # split the text from the body up into rows for easy iteration
+
+    player['Draft Class'] = draft_class
+    player['TPE'] = tpe
+    player['Position'] = position
+
     for line in post_text:
         # why don't switch statements exist in Python???????
         if line.startswith('First Name'):
@@ -162,36 +198,71 @@ def get_player_stats(name_url, team):
                 player['Weakness'] = ''
         elif line.startswith('Points Available'):
             try:
-                player['Points Available'] = line.split(':')[1].strip()  # this gets the amount of points the player has available
+                available = line.split(':')[1].strip()  # this gets the amount of points the player has available
+                available = available.split()[0].rstrip('Â')
+                player['Points Available'] = available
             except:
                 player['Points Available'] = '0'
-        elif line.startswith('CK'):
-            player['CK'] = line.split(': ')[1]  # this gets the player Checking
-        elif line.startswith('FG'):
-            player['FG'] = line.split(': ')[1]  # this gets the player fighting
-        elif line.startswith('DI'):
-            player['DI'] = line.split(': ')[1]  # this gets the player Discipline
-        elif line.startswith('SK'):
-            player['SK'] = line.split(': ')[1]  # this gets the player skating
-        elif line.startswith('ST'):
-            player['ST'] = line.split(': ')[1]  # this gets the player strength
-        elif line.startswith('EN'):
-            player['EN'] = line.split(': ')[1]  # this gets the player endurance
-        elif line.startswith('DU'):
-            player['DU'] = line.split(': ')[1]  # this gets the player durability
-        elif line.startswith('PH'):
-            player['PH'] = line.split(': ')[1]  # this gets the player Puck handling
-        elif line.startswith('FO'):
-            player['FO'] = line.split(': ')[1]  # this gets the player face off
-        elif line.startswith('PA'):
-            player['PA'] = line.split(': ')[1]  # this gets the player Passing
-        elif line.startswith('SC'):
-            player['SC'] = line.split(': ')[1]  # this gets the player scoring
-        elif line.startswith('DF'):
-            player['DF'] = line.split(': ')[1]  # this gets the player defence
-        elif line.startswith('PS'):
-            player['PS'] = line.split(': ')[1]  # this gets the player penalty shot
+        if position != 'G':
+            if line.startswith('CK'):
+                player['CK'] = line.split(': ')[1]  # this gets the player Checking
+            elif line.startswith('FG'):
+                player['FG'] = line.split(': ')[1]  # this gets the player fighting
+            elif line.startswith('DI'):
+                player['DI'] = line.split(': ')[1]  # this gets the player Discipline
+            elif line.startswith('SK'):
+                player['SK'] = line.split(': ')[1]  # this gets the player skating
+            elif line.startswith('ST'):
+                player['ST'] = line.split(': ')[1]  # this gets the player strength
+            elif line.startswith('EN'):
+                player['EN'] = line.split(': ')[1]  # this gets the player endurance
+            elif line.startswith('DU'):
+                player['DU'] = line.split(': ')[1]  # this gets the player durability
+            elif line.startswith('PH'):
+                player['PH'] = line.split(': ')[1]  # this gets the player Puck handling
+            elif line.startswith('FO'):
+                player['FO'] = line.split(': ')[1]  # this gets the player face off
+            elif line.startswith('PA'):
+                player['PA'] = line.split(': ')[1]  # this gets the player Passing
+            elif line.startswith('SC'):
+                player['SC'] = line.split(': ')[1]  # this gets the player scoring
+            elif line.startswith('DF'):
+                player['DF'] = line.split(': ')[1]  # this gets the player defence
+            elif line.startswith('PS'):
+                player['PS'] = line.split(': ')[1]  # this gets the player penalty shot
     return player  # return the player
+
+
+def get_player_tpe(page, player_dict):
+    """calculate the total tpe based on points given. Takes in a page and player dict as backup"""
+    position_and_class = page.strong.text
+    tpe = str()
+    draft_class = str()
+    position = str()
+
+    if position_and_class.__contains__(' C ') or position_and_class.__contains__(' Center ') or position_and_class.__contains__(' CENTER '):
+        position = 'C'
+    if position_and_class.__contains__(' LW ') or position_and_class.__contains__(' Left Wing ') or position_and_class.__contains__(' LEFT WING '):
+        position = 'LW'
+    if position_and_class.__contains__(' RW ') or position_and_class.__contains__(' Right Wing ') or position_and_class.__contains__(' RIGHT WING '):
+        position = 'RW'
+    if position_and_class.__contains__(' D ') or position_and_class.__contains__(' Defense ') or position_and_class.__contains__(' DEFENSE '):
+        position = 'D'
+    if position_and_class.__contains__(' G ') or position_and_class.__contains__(' Goalie ') or position_and_class.__contains__(' GOALIE '):
+        position = 'G'
+
+    draft_class = position_and_class.split()[0].strip('[').strip(']')
+    try:
+        tpe = page.small.text
+        if len(tpe.split()) == 2:
+            tpe = tpe.split()[1]
+        else:
+            print(len(tpe.split()))
+    except:
+        tpe = 'Calculate it yourself!'
+
+    print(position_and_class)
+    return tpe, draft_class, position
 
 
 def main():
