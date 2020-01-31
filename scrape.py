@@ -114,12 +114,12 @@ def get_player_stats(name_url, team):
     draft_class = position_and_class.split()[0].strip('[').strip(']')
     try:
         tpe = soup.find_all('td', 'thead')[1].small.text
-        if len(tpe.split()) >= 0:
-            tpe = tpe.split()[1]
+        if len(tpe.split()) == 3:
+            tpe = tpe.split()[2]
         else:
-            print(len(tpe.split()))
+            tpe = tpe.split()[1]
     except:
-        tpe = 'Calculate it yourself!'
+        tpe = 'Calculation function not available'
 
 
     post = soup.find_all('div', 'post_body scaleimages')[0]
@@ -148,7 +148,12 @@ def get_player_stats(name_url, team):
                 player['Position'] = ''
         elif line.startswith('Shoots'):
             try:
-                player['Shoots'] = line.split(':')[1].strip()  # this gets the player shooting hand
+                if line.split(':')[1].strip() == 'L':
+                    player['Shoots'] = 'Left'  # this gets the player shooting hand
+                if line.split(':')[1].strip() == 'R':
+                    player['Shoots'] = 'Right'
+                else:
+                    player['Shoots'] = line.split(':')[1].strip()
             except:
                 player['Shoots'] = ''
         elif line.startswith('Recruited'):
@@ -217,7 +222,8 @@ def get_player_stats(name_url, team):
             elif line.startswith('EN'):
                 player['EN'] = line.split(': ')[1]  # this gets the player endurance
             elif line.startswith('DU'):
-                player['DU'] = line.split(': ')[1]  # this gets the player durability
+                #player['DU'] = line.split(': ')[1]  # this gets the player durability
+                player['DU'] = '50'
             elif line.startswith('PH'):
                 player['PH'] = line.split(': ')[1]  # this gets the player Puck handling
             elif line.startswith('FO'):
