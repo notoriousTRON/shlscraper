@@ -40,9 +40,27 @@ def get_smjhl_players(url_file, smjhl_players_csv):
         for player in player_url_list:  # for each player in player_url_list
             player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
-    csv_file = "data.csv"
+    csv_file = smjhl_players_csv
     csv_columns = player_dict_list[0].keys()
-    with open(csv_file, 'w+', encoding='utf-8') as csvfile:
+    with open(csv_file, 'w+', encoding='utf-8-sig', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+        writer.writeheader()
+        for data in player_dict_list:
+            writer.writerow(data)
+
+
+def get_shl_players(url_file, shl_players_csv):
+    """use the urls provided in the json to get each player's information"""
+    team_url_list = get_roster_url(url_file, 'SHL')
+    player_dict_list = list()  # list that will hold all of the player info dicts to be put into a csv
+    for team in team_url_list:  # For each team in the list
+        player_url_list = get_player_urls(team[1])  # get each player page URL
+        for player in player_url_list:  # for each player in player_url_list
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
+    # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
+    csv_file = shl_players_csv
+    csv_columns = player_dict_list[0].keys()
+    with open(csv_file, 'w+', encoding='utf-8-sig', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
         writer.writeheader()
         for data in player_dict_list:
@@ -66,6 +84,7 @@ def get_player_urls(team_roster_url):
     return_list = list()
     while has_next:  # this loop ensures that all pages of the roster are hit
         user_agent = random.choice(user_agent_list)
+        print(user_agent)
         headers = {'User-Agent': user_agent}
         roster_page = requests.get(team_roster_url + '&page=' + str(page), headers=headers)
         soup = BeautifulSoup(roster_page.content, 'html.parser')
@@ -81,10 +100,13 @@ def get_player_urls(team_roster_url):
 
 def get_player_stats(name_url, team):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
-    #print(team)
-    player = dict()
+    player = dict.fromkeys(['Team', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
+                            'Player Render', 'Jersey Number', 'Height',	'Weight', 'Birthplace',	'Player Type',
+                            'Strengths', 'Weakness', 'Points Available', 'CK', 'FG', 'DI', 'SK', 'ST', 'EN', 'DU', 'PH',
+                            'FO', 'PA', 'SC', 'DF',	'PS', 'AG', 'SZ', 'RB', 'RT', 'HS', 'TPE'])
     player['Team'] = team
     user_agent = random.choice(user_agent_list)
+    print(user_agent)
     headers = {'User-Agent': user_agent}
     player_page = requests.get(name_url, headers=headers)
     soup = BeautifulSoup(player_page.content, 'html.parser')
@@ -127,7 +149,7 @@ def get_player_stats(name_url, team):
 
     player['Draft Class'] = draft_class
     player['TPE'] = tpe
-    player['Position'] = position
+    player['Played Position'] = position
 
     for line in post_text:
         # why don't switch statements exist in Python???????
@@ -218,7 +240,7 @@ def get_player_stats(name_url, team):
             elif line.startswith('SK'):
                 player['SK'] = line.split(': ')[1]  # this gets the player skating
             elif line.startswith('ST'):
-                player['ST'] = line.split(': ')[1]  # this gets the player strength
+                player['ST'] = line.split(':')[1].strip()  # this gets the player strength
             elif line.startswith('EN'):
                 player['EN'] = line.split(': ')[1]  # this gets the player endurance
             elif line.startswith('DU'):
@@ -234,6 +256,30 @@ def get_player_stats(name_url, team):
                 player['SC'] = line.split(': ')[1]  # this gets the player scoring
             elif line.startswith('DF'):
                 player['DF'] = line.split(': ')[1]  # this gets the player defence
+            elif line.startswith('PS'):
+                player['PS'] = line.split(': ')[1]  # this gets the player penalty shot
+        elif position == 'G':
+            if line.startswith('SK'):
+                player['SK'] = line.split(': ')[1]  # this gets the player skating
+            elif line.startswith('DU'):
+                #player['DU'] = line.split(': ')[1]  # this gets the player durability
+                player['DU'] = '50'
+            elif line.startswith('EN'):
+                player['EN'] = line.split(': ')[1]  # this gets the player endurance
+            elif line.startswith('SZ'):
+                player['SZ'] = line.split(': ')[1]  # this gets the player Size
+            elif line.startswith('AG'):
+                player['AG'] = line.split(': ')[1]  # this gets the player Agility
+            elif line.startswith('RB'):
+                player['RB'] = line.split(': ')[1]  # this gets the player rebound control
+            elif line.startswith('SC'):
+                player['SC'] = line.split(': ')[1]  # this gets the player style control
+            elif line.startswith('HS'):
+                player['HS'] = line.split(': ')[1]  # this gets the player Hand speed
+            elif line.startswith('RT'):
+                player['RT'] = line.split(': ')[1]  # this gets the player reaction Time
+            elif line.startswith('PH'):
+                player['PH'] = line.split(': ')[1]  # this gets the player Puck handling
             elif line.startswith('PS'):
                 player['PS'] = line.split(': ')[1]  # this gets the player penalty shot
     return player  # return the player
@@ -274,9 +320,10 @@ def get_player_tpe(page, player_dict):
 def main():
     """main"""
     url_file = "roster_urls.json"
-    smjhl_players_csv = "smjhl_players.csv"
-    shl_players_csv = "shl_players.csv"
+    smjhl_players_csv = "smjhl-2020-1-31.csv"
+    shl_players_csv = "shl-2020-1-31.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
+    get_shl_players(url_file, shl_players_csv)
 
 
 main()
