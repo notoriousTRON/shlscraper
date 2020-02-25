@@ -161,6 +161,7 @@ def get_player_stats(name_url, team):
         elif line.startswith('Last Name'):
             try:
                 player['Last Name'] = line.split(':')[1].strip()  # this gets the first name from the last name line
+                print(player['Last Name'])
             except:
                 player['Last Name'] = ''
         elif line.startswith('Position'):
@@ -230,7 +231,8 @@ def get_player_stats(name_url, team):
                 player['Points Available'] = available
             except:
                 player['Points Available'] = '0'
-        if position != 'G':
+        #if position != 'G' and player['Last Name'] != 'Yukikami' and player['Last Name'] != 'Hughes':
+         if position != 'G':
             if line.startswith('CK'):
                 player['CK'] = line.split(': ')[1]  # this gets the player Checking
             elif line.startswith('FG'):
@@ -247,7 +249,10 @@ def get_player_stats(name_url, team):
                 #player['DU'] = line.split(': ')[1]  # this gets the player durability
                 player['DU'] = '50'
             elif line.startswith('PH'):
-                player['PH'] = line.split(': ')[1]  # this gets the player Puck handling
+                try:
+                    player['PH'] = line.split(':')[1].strip()  # this gets the player Puck handling
+                except:
+                    player['PH'] = ''
             elif line.startswith('FO'):
                 player['FO'] = line.split(': ')[1]  # this gets the player face off
             elif line.startswith('PA'):
@@ -320,10 +325,10 @@ def get_player_tpe(page, player_dict):
 def main():
     """main"""
     url_file = "roster_urls.json"
-    smjhl_players_csv = "smjhl-2020-1-31.csv"
+    smjhl_players_csv = "smjhl-2020-2-24.csv"
     shl_players_csv = "shl-2020-1-31.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
-    get_shl_players(url_file, shl_players_csv)
+    #get_shl_players(url_file, shl_players_csv)
 
 
 main()
