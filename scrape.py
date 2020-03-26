@@ -101,9 +101,9 @@ def get_player_urls(team_roster_url):
 def get_player_stats(name_url, team):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
     player = dict.fromkeys(['Team', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
-                            'Player Render', 'Jersey Number', 'Height',	'Weight', 'Birthplace',	'Player Type',
+                            'Player Render', 'Jersey Number', 'Height', 'Weight', 'Birthplace', 'Player Type',
                             'Strengths', 'Weakness', 'Points Available', 'CK', 'FG', 'DI', 'SK', 'ST', 'EN', 'DU', 'PH',
-                            'FO', 'PA', 'SC', 'DF',	'PS', 'AG', 'SZ', 'RB', 'RT', 'HS', 'TPE'])
+                            'FO', 'PA', 'SC', 'DF', 'PS', 'AG', 'SZ', 'RB', 'RT', 'HS', 'TPE'])
     player['Team'] = team
     user_agent = random.choice(user_agent_list)
     print(user_agent)
@@ -232,7 +232,7 @@ def get_player_stats(name_url, team):
             except:
                 player['Points Available'] = '0'
         #if position != 'G' and player['Last Name'] != 'Yukikami' and player['Last Name'] != 'Hughes':
-         if position != 'G':
+        if position != 'G':
             if line.startswith('CK'):
                 player['CK'] = line.split(': ')[1]  # this gets the player Checking
             elif line.startswith('FG'):
