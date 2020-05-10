@@ -1,5 +1,7 @@
 import requests, json, csv, random
 from bs4 import BeautifulSoup
+import os
+os.chdir(r'C:\projects\shl_scraper')
 
 
 user_agent_list = [
@@ -102,8 +104,15 @@ def get_player_stats(name_url, team):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
     player = dict.fromkeys(['Team', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
                             'Player Render', 'Jersey Number', 'Height', 'Weight', 'Birthplace', 'Player Type',
-                            'Strengths', 'Weakness', 'Points Available', 'CK', 'FG', 'DI', 'SK', 'ST', 'EN', 'DU', 'PH',
-                            'FO', 'PA', 'SC', 'DF', 'PS', 'AG', 'SZ', 'RB', 'RT', 'HS', 'TPE'])
+                            'Strengths', 'Weakness', 'Points Available', 
+                            'Screening', 'Getting Open', 'Passing', 'Puckhandling', 'Shooting Accuracy', 'Shooting Range', 'Offensive Read',
+                            'Checking','Hitting','Positioning','Stickchecking','Shot Blocking','Faceoffs','Defensive Read',
+                            'Acceleration','Agility','Balance','Speed','Stamina','Strength','Fighting',
+                            'Aggression','Bravery','Determination','Team Player','Leadership','Temperament','Professionalism',
+                            'Blocker','Glove','Passing','Poke Check','Positioning','Rebound','Recovery','Puckhandling','Low Shots','Reflexes','Skating',
+                            'Mental Toughness','Goalie Stamina',
+                            'TPE'
+                           ])
     player['Team'] = team
     user_agent = random.choice(user_agent_list)
     print(user_agent)
@@ -232,61 +241,109 @@ def get_player_stats(name_url, team):
             except:
                 player['Points Available'] = '0'
         #if position != 'G' and player['Last Name'] != 'Yukikami' and player['Last Name'] != 'Hughes':
+        #skater ratings
         if position != 'G':
-            if line.startswith('CK'):
-                player['CK'] = line.split(': ')[1]  # this gets the player Checking
-            elif line.startswith('FG'):
-                player['FG'] = line.split(': ')[1]  # this gets the player fighting
-            elif line.startswith('DI'):
-                player['DI'] = line.split(': ')[1]  # this gets the player Discipline
-            elif line.startswith('SK'):
-                player['SK'] = line.split(': ')[1]  # this gets the player skating
-            elif line.startswith('ST'):
-                player['ST'] = line.split(':')[1].strip()  # this gets the player strength
-            elif line.startswith('EN'):
-                player['EN'] = line.split(': ')[1]  # this gets the player endurance
-            elif line.startswith('DU'):
-                #player['DU'] = line.split(': ')[1]  # this gets the player durability
-                player['DU'] = '50'
-            elif line.startswith('PH'):
-                try:
-                    player['PH'] = line.split(':')[1].strip()  # this gets the player Puck handling
-                except:
-                    player['PH'] = ''
-            elif line.startswith('FO'):
-                player['FO'] = line.split(': ')[1]  # this gets the player face off
-            elif line.startswith('PA'):
-                player['PA'] = line.split(': ')[1]  # this gets the player Passing
-            elif line.startswith('SC'):
-                player['SC'] = line.split(': ')[1]  # this gets the player scoring
-            elif line.startswith('DF'):
-                player['DF'] = line.split(': ')[1]  # this gets the player defence
-            elif line.startswith('PS'):
-                player['PS'] = line.split(': ')[1]  # this gets the player penalty shot
+            #Offensive Ratings
+            if line.startswith('Screening'):
+                player['Screening'] = line.split(': ')[1]  # this gets the player Screening
+            elif line.startswith('Getting Open'):
+                player['Getting Open'] = line.split(': ')[1]  # this gets the player Getting Open
+            elif line.startswith('Passing'):
+                player['Passing'] = line.split(': ')[1]  # this gets the player Passing
+            elif line.startswith('Puckhandling'):
+                player['Puckhandling'] = line.split(': ')[1]  # this gets the player Puckhandling
+            elif line.startswith('Shooting Accuracy'):
+                player['Shooting Accuracy'] = line.split(':')[1].strip()  # this gets the player Shooting Accuracy
+            elif line.startswith('Shooting Range'):
+                player['Shooting Range'] = line.split(': ')[1]  # this gets the player Shooting Range
+            elif line.startswith('Offensive Read'):
+                player['Offensive Read'] = line.split(': ')[1]  # this gets the player Offensive Read
+            #Defensive Ratings
+            elif line.startswith('Checking'):
+                player['Checking'] = line.split(': ')[1]  # this gets the player Checking
+            elif line.startswith('Hitting'):
+                player['Hitting'] = line.split(': ')[1]  # this gets the player Hitting
+            elif line.startswith('Positioning'):
+                player['Positioning'] = line.split(': ')[1]  # this gets the player Positioning
+            elif line.startswith('Stickchecking'):
+                player['Stickchecking'] = line.split(': ')[1]  # this gets the player Stickchecking
+            elif line.startswith('Shot Blocking'):
+                player['Shot Blocking'] = line.split(': ')[1]  # this gets the player Shot Blocking
+            elif line.startswith('Faceoffs'):
+                player['Faceoffs'] = line.split(': ')[1]  # this gets the player Faceoffs
+            elif line.startswith('Defensive Read'):
+                player['Defensive Read'] = line.split(': ')[1]  # this gets the player Defensive Read
+            #Physical Ratings
+            elif line.startswith('Acceleration'):
+                player['Acceleration'] = line.split(': ')[1]  # this gets the player Acceleration
+            elif line.startswith('Agility'):
+                player['Agility'] = line.split(': ')[1]  # this gets the player Agility
+            elif line.startswith('Balance'):
+                player['Balance'] = line.split(': ')[1]  # this gets the player Balance
+            elif line.startswith('Speed'):
+                player['Speed'] = line.split(': ')[1]  # this gets the player Speed
+            elif line.startswith('Stamina'):
+                player['Stamina'] = line.split(': ')[1]  # this gets the player Stamina
+            elif line.startswith('Strength'):
+                player['Strength'] = line.split(': ')[1]  # this gets the player Strength
+            elif line.startswith('Fighting'):
+                player['Fighting'] = line.split(': ')[1]  # this gets the player Fighting
+            #Mental Ratings
+            elif line.startswith('Aggression'):
+                player['Aggression'] = line.split(': ')[1]  # this gets the player Aggression
+            elif line.startswith('Bravery'):
+                player['Bravery'] = line.split(': ')[1]  # this gets the player Bravery
+            elif line.startswith('*Determination'):
+                player['Determination'] = '15'  # this gets the player Determination
+            elif line.startswith('*Team Player'):
+                player['Team Player'] = '15'  # this gets the player Team Player
+            elif line.startswith('*Team Player'):
+                player['Team Player'] = '15'  # this gets the player Team Player
+            elif line.startswith('*Temperament'):
+                player['Temperament'] = '15'  # this gets the player Temperament
+            elif line.startswith('*Professionalism'):
+                player['Professionalism'] = '15'  # this gets the player Professionalism
+        #goalie ratings    
         elif position == 'G':
-            if line.startswith('SK'):
-                player['SK'] = line.split(': ')[1]  # this gets the player skating
-            elif line.startswith('DU'):
-                #player['DU'] = line.split(': ')[1]  # this gets the player durability
-                player['DU'] = '50'
-            elif line.startswith('EN'):
-                player['EN'] = line.split(': ')[1]  # this gets the player endurance
-            elif line.startswith('SZ'):
-                player['SZ'] = line.split(': ')[1]  # this gets the player Size
-            elif line.startswith('AG'):
-                player['AG'] = line.split(': ')[1]  # this gets the player Agility
-            elif line.startswith('RB'):
-                player['RB'] = line.split(': ')[1]  # this gets the player rebound control
-            elif line.startswith('SC'):
-                player['SC'] = line.split(': ')[1]  # this gets the player style control
-            elif line.startswith('HS'):
-                player['HS'] = line.split(': ')[1]  # this gets the player Hand speed
-            elif line.startswith('RT'):
-                player['RT'] = line.split(': ')[1]  # this gets the player reaction Time
-            elif line.startswith('PH'):
-                player['PH'] = line.split(': ')[1]  # this gets the player Puck handling
-            elif line.startswith('PS'):
-                player['PS'] = line.split(': ')[1]  # this gets the player penalty shot
+            #goalie ratings
+            if line.startswith('Blocker'):
+                player['Blocker'] = line.split(': ')[1]  # this gets the player Blocker
+            elif line.startswith('Glove'):
+                player['Glove'] = line.split(': ')[1] # this gets the player Glove
+            elif line.startswith('Passing'):
+                player['Passing'] = line.split(': ')[1]  # this gets the player Passing
+            elif line.startswith('Poke Check'):
+                player['Poke Check'] = line.split(': ')[1]  # this gets the player Poke Check
+            elif line.startswith('Positioning'):
+                player['Positioning'] = line.split(': ')[1]  # this gets the player Positioning
+            elif line.startswith('Rebound'):
+                player['Rebound'] = line.split(': ')[1]  # this gets the player Rebound
+            elif line.startswith('Recovery'):
+                player['Recovery'] = line.split(': ')[1]  # this gets the player Recovery
+            elif line.startswith('Puckhandling'):
+                player['Puckhandling'] = line.split(': ')[1]  # this gets the player Puckhandling
+            elif line.startswith('Low Shots'):
+                player['Low Shots'] = line.split(': ')[1]  # this gets the player Low Shots
+            elif line.startswith('Reflexes'):
+                player['Reflexes'] = line.split(': ')[1]  # this gets the player Reflexes
+            elif line.startswith('Skating'):
+                player['Skating'] = line.split(': ')[1]  # this gets the player Skating
+            #mental ratings
+            elif line.startswith('*Aggression'):
+                player['Aggression'] = '8'  # this gets the player Aggression
+            elif line.startswith('Mental Toughness'):
+                player['Mental Toughness'] = line.split(': ')[1]  # this gets the player Mental Toughness
+            elif line.startswith('*Determination'):
+                player['Determination'] = '15'  # this gets the player Determination
+            elif line.startswith('*Team Player'):
+                player['Team Player'] = '15' # this gets the player Team Player
+            elif line.startswith('*Leadership'):
+                player['Leadership'] = '15'  # this gets the player Leadership
+            elif line.startswith('Goalie Stamina'):
+                player['Goalie Stamina'] = line.split(': ')[1]  # this gets the player Goalie Stamina
+            elif line.startswith('*Professionalism'):
+                player['Professionalism'] = '15' # this gets the player Professionalism
+            
     return player  # return the player
 
 
