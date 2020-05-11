@@ -143,7 +143,7 @@ def get_player_stats(name_url, team):
             ' Goalie ') or position_and_class.__contains__(' GOALIE '):
         position = 'G'
 
-    draft_class = position_and_class.split()[0].strip('[').strip(']')
+    draft_class = 'S' + position_and_class.split()[0].strip('[').strip(']').strip('S')
     try:
         tpe = soup.find_all('td', 'thead')[1].small.text
         if len(tpe.split()) == 3:
