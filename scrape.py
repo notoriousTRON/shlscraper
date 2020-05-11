@@ -69,6 +69,7 @@ def get_shl_players(url_file, shl_players_csv):
             writer.writerow(data)
 
 
+
 def get_roster_url(url_file, league):
     """Get the roster URLs for the specified league"""
     return_list = []
@@ -400,8 +401,9 @@ def main():
     url_file = "roster_urls.json"
     smjhl_players_csv = "smjhl-2020-5-9.csv"
     shl_players_csv = "shl-2020-5-9.csv"
+    shl_prospects_csv = "prospects-2020-5-9.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
     get_shl_players(url_file, shl_players_csv)
-
+    get_shl_prospects(url_file, shl_prospects_csv)
 
 main()
