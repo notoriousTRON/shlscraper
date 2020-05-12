@@ -132,7 +132,7 @@ def get_player_stats(name_url, team, player_type):
     player['Team'] = team
     player['Player Type'] = player_type
     user_agent = random.choice(user_agent_list)
-    print(user_agent)
+    #print(user_agent)
     headers = {'User-Agent': user_agent}
     player_page = requests.get(name_url, headers=headers)
     soup = BeautifulSoup(player_page.content, 'html.parser')
@@ -187,7 +187,6 @@ def get_player_stats(name_url, team, player_type):
             elif line.startswith('Last Name'):
                 try:
                     player['Last Name'] = get_attr(line,1)  # this gets the first name from the last name line
-                    print(player['Last Name'])
                 except:
                     player['Last Name'] = ''
             elif line.startswith('Shoots'):
@@ -345,8 +344,8 @@ def get_player_stats(name_url, team, player_type):
                     player['Goalie Stamina'] = get_attr(line,1)   # this gets the player Goalie Stamina
                 elif line.startswith('*Professionalism'):
                     player['Professionalism'] = '15' # this gets the player Professionalism
-
-        return player  # return the player
+    print(player['Team'],' - ',player['First Name'],' ',player['Last Name'],' - ',player['Played Position'])
+    return player  # return the player
 
 def get_player_tpe(page, player_dict):
     """calculate the total tpe based on points given. Takes in a page and player dict as backup"""
@@ -399,9 +398,9 @@ def get_attr(line,pos):
 def main():
     """main"""
     url_file = "roster_urls.json"
-    smjhl_players_csv = "smjhl-2020-5-9.csv"
-    shl_players_csv = "shl-2020-5-9.csv"
-    shl_prospects_csv = "prospects-2020-5-9.csv"
+    smjhl_players_csv = "smjhl-2020-5-11.csv"
+    shl_players_csv = "shl-2020-5-11.csv"
+    shl_prospects_csv = "prospects-2020-5-11.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
     get_shl_players(url_file, shl_players_csv)
     get_shl_prospects(url_file, shl_prospects_csv)
