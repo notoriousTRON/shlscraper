@@ -235,7 +235,7 @@ def get_player_stats(name_url, team, player_type):
                     player['Player Type'] = get_attr(line,1)   # this gets the player type
                 except:
                     player['Player Type'] = ''
-            elif line.lower().startswith('points available'):
+            elif line.lower().startswith('points available') or line.lower().startswith('bank'):
                 try:
                     available = get_attr(line,1)   # this gets the amount of points the player has available
                     available = available.split()[0].rstrip('Â')
@@ -366,33 +366,35 @@ def get_tpe(player,position):
                       ,'Low Shots','Reflexes','Skating','Mental Toughness','Goalie Stamina'
 
                     ]
+    try:
+        tpe = 0
+        for a in attr_set:
+            if int(player[a]) > 17:
+                tpe += (int(player[a]) - 17)*40 + (17 - 15)*25 + (15 - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+            elif int(player[a]) > 15:
+                tpe += (int(player[a]) - 15)*25 + (15 - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+            elif int(player[a]) > 13:
+                tpe += (int(player[a]) - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+            elif int(player[a]) > 11:
+                tpe += (int(player[a]) - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+            elif int(player[a]) > 9:
+                tpe += (int(player[a]) - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+            elif int(player[a]) > 7:
+                tpe += (int(player[a]) - 7)*2 + (7 - 5)*1
+            elif int(player[a]) > 5:
+                tpe += (int(player[a]) - 5)*1
 
-    tpe = 0
-    for a in attr_set:
-        if int(player[a]) > 17:
-            tpe += (int(player[a]) - 17)*40 + (17 - 15)*25 + (15 - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
-        elif int(player[a]) > 15:
-            tpe += (int(player[a]) - 15)*25 + (15 - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
-        elif int(player[a]) > 13:
-            tpe += (int(player[a]) - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
-        elif int(player[a]) > 11:
-            tpe += (int(player[a]) - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
-        elif int(player[a]) > 9:
-            tpe += (int(player[a]) - 9)*5 + (9 - 7)*2 + (7 - 5)*1
-        elif int(player[a]) > 7:
-            tpe += (int(player[a]) - 7)*2 + (7 - 5)*1
-        elif int(player[a]) > 5:
-            tpe += (int(player[a]) - 5)*1
-        
-    ####### NEXT WEEK ADD THIS BLOCK BACK IN ######    
-        
-    #if int(player['Stamina']) > 17:
-    #    tpe += (int(player['Stamina']) - 17)*40 + (17 - 15)*25 + (15 - 11)*8
-    #elif int(player['Stamina']) > 15:
-    #    tpe += (int(player['Stamina']) - 15)*25 + (15 - 11)*8
-    #elif int(player['Stamina']) > 11:
-    #    tpe += (int(player['Stamina']) - 11)*8
-    #print('Stamina',player['Stamina'],tpe)
+        ####### NEXT WEEK ADD THIS BLOCK BACK IN ######    
+
+        #if int(player['Stamina']) > 17:
+        #    tpe += (int(player['Stamina']) - 17)*40 + (17 - 15)*25 + (15 - 11)*8
+        #elif int(player['Stamina']) > 15:
+        #    tpe += (int(player['Stamina']) - 15)*25 + (15 - 11)*8
+        #elif int(player['Stamina']) > 11:
+        #    tpe += (int(player['Stamina']) - 11)*8
+        #print('Stamina',player['Stamina'],tpe)
+    except:
+        tpe = 0
         
     return tpe
 
