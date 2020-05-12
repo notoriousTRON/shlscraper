@@ -68,7 +68,22 @@ def get_shl_players(url_file, shl_players_csv):
         for data in player_dict_list:
             writer.writerow(data)
 
-
+def get_shl_prospects(url_file, shl_prospects_csv):
+    """use the urls provided in the json to get each player's information"""
+    prospect_url_list = get_roster_url(url_file, 'Prospects')
+    player_dict_list = list()  # list that will hold all of the player info dicts to be put into a csv
+    for team in prospect_url_list:  # For each team in the list
+        player_url_list = get_player_urls(team[1])  # get each player page URL
+        for player in player_url_list:  # for each player in player_url_list
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
+    # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
+    csv_file = shl_prospects_csv
+    csv_columns = player_dict_list[0].keys()
+    with open(csv_file, 'w+', encoding='utf-8-sig', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+        writer.writeheader()
+        for data in player_dict_list:
+            writer.writerow(data)
 
 def get_roster_url(url_file, league):
     """Get the roster URLs for the specified league"""
@@ -174,13 +189,6 @@ def get_player_stats(name_url, team):
                     print(player['Last Name'])
                 except:
                     player['Last Name'] = ''
-            '''
-            elif line.startswith('Position'):
-                try:
-                    player['Position'] = get_attr(line,1)   # this gets the player position
-                except:
-                    player['Position'] = ''
-            '''
             elif line.startswith('Shoots'):
                 try:
                     if get_attr(line,1)  == 'L':
@@ -226,18 +234,6 @@ def get_player_stats(name_url, team):
                     player['Player Type'] = get_attr(line,1)   # this gets the player type
                 except:
                     player['Player Type'] = ''
-            '''
-            elif line.startswith('Strengths'):
-                try:
-                    player['Strengths'] = get_attr(line,1)   # this gets the player strengths
-                except:
-                    player['Strengths'] = ''
-            elif line.startswith('Weakness'):
-                try:
-                    player['Weakness'] = get_attr(line,1)   # this gets the player weakness
-                except:
-                    player['Weakness'] = ''
-            '''
             elif line.startswith('Points Available'):
                 try:
                     available = get_attr(line,1)   # this gets the amount of points the player has available
@@ -350,7 +346,6 @@ def get_player_stats(name_url, team):
                     player['Professionalism'] = '15' # this gets the player Professionalism
 
         return player  # return the player
-
 
 def get_player_tpe(page, player_dict):
     """calculate the total tpe based on points given. Takes in a page and player dict as backup"""
