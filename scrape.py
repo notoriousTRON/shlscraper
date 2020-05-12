@@ -159,8 +159,8 @@ def get_player_stats(name_url, team, player_type):
             ' Goalie ') or position_and_class.__contains__(' GOALIE '):
         position = 'G'
 
-    #draft_class = 'S' + position_and_class.split()[0].strip('[').strip(']').strip('S').strip('(').strip(')')
-    draft_class_num = position_and_class.split()[0].strip('[').strip(']').strip('S').strip('(').strip(')')
+    draft_class = position_and_class.split()[0].strip('[').strip(']').strip('(').strip(')')
+    #draft_class_num = position_and_class.split()[0].strip('[').strip(']').strip('S').strip('(').strip(')')
     try:
         tpe = soup.find_all('td', 'thead')[1].small.text
         if len(tpe.split()) == 3:
@@ -173,8 +173,8 @@ def get_player_stats(name_url, team, player_type):
     post = soup.find_all('div', 'post_body scaleimages')[0]
     post_text = post.text.split('\n') # split the text from the body up into rows for easy iteration
 
-    player['Draft Class'] = 'S'+draft_class_num.strip('S')
-    player['Draft Class Numeric'] = draft_class_num.strip('S')
+    player['Draft Class'] = 'S'+draft_class.strip('S')
+    player['Draft Class Numeric'] = draft_class.strip('S')
     player['Listed TPE'] = tpe
     player['Played Position'] = position
 
