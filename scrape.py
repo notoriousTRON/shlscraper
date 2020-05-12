@@ -286,7 +286,7 @@ def get_player_stats(name_url, team, player_type):
                     player['Speed'] = get_attr(line,1)   # this gets the player Speed
                 elif line.lower().startswith('stamina'):
                     player['Stamina'] = get_attr(line,1)   # this gets the player Stamina
-                elif line.lower().startswith('strength'):
+                elif line.lower().startswith('strength:') or line.lower().startswith('strength '):
                     player['Strength'] = get_attr(line,1)   # this gets the player Strength
                 elif line.lower().startswith('fighting'):
                     player['Fighting'] = get_attr(line,1)   # this gets the player Fighting
@@ -401,7 +401,7 @@ def get_tpe(player,position):
 
 def get_attr(line,pos):
     try:
-        out = line.lower().split(':')[pos].strip()
+        out = line.strip().lower().split(':')[pos]
     except:
         try:
             out = line.lower().split(' ')
@@ -418,6 +418,6 @@ def main():
     shl_prospects_csv = "prospects-2020-5-12.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
     get_shl_players(url_file, shl_players_csv)
-    get_shl_prospects(url_file, shl_prospects_csv)
+    #get_shl_prospects(url_file, shl_prospects_csv)
 
 main()
