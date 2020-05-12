@@ -159,7 +159,7 @@ def get_player_stats(name_url, team, player_type):
             ' Goalie ') or position_and_class.__contains__(' GOALIE '):
         position = 'G'
 
-    draft_class = 'S' + position_and_class.split()[0].strip('[').strip(']').strip('S')
+    draft_class = 'S' + position_and_class.split()[0].strip('[').strip(']').strip('S').strip('(').strip(')')
     try:
         tpe = soup.find_all('td', 'thead')[1].small.text
         if len(tpe.split()) == 3:
@@ -182,62 +182,62 @@ def get_player_stats(name_url, team, player_type):
             # why don't switch statements exist in Python???????
             if line.lower().startswith('first name'):
                 try:
-                    player['First Name'] = get_attr(line)  # this gets the first name from the first name line
+                    player['First Name'] = get_attr(line,1)  # this gets the first name from the first name line
                 except:
                     player['First Name'] = ''
             elif line.lower().startswith('last name'):
                 try:
-                    player['Last Name'] = get_attr(line)  # this gets the first name from the last name line
+                    player['Last Name'] = get_attr(line,1)  # this gets the first name from the last name line
                 except:
                     player['Last Name'] = ''
             elif line.lower().startswith('shoots'):
                 try:
-                    if get_attr(line)  == 'L':
+                    if get_attr(line,1)  == 'L':
                         player['Shoots'] = 'Left'  # this gets the player shooting hand
-                    if get_attr(line)  == 'R':
+                    if get_attr(line,1)  == 'R':
                         player['Shoots'] = 'Right'
                     else:
-                        player['Shoots'] = get_attr(line) 
+                        player['Shoots'] = get_attr(line,1) 
                 except:
                     player['Shoots'] = ''
             elif line.lower().startswith('recruited'):
                 try:
-                    player['Recruited by'] = get_attr(line)   # this gets where they were recruited (if applicable)
+                    player['Recruited by'] = get_attr(line,1)   # this gets where they were recruited (if applicable)
                 except:
                     player['Recruited by'] = ''
             elif line.lower().startswith('player render'):
                 try:
-                    player['Player Render'] = get_attr(line)   # this gets the player render
+                    player['Player Render'] = get_attr(line,1)   # this gets the player render
                 except:
                     player['Player Render'] = ''
             elif line.lower().startswith('jersey number'):
                 try:
-                    player['Jersey Number'] = get_attr(line)   # this gets the player Jersey Number
+                    player['Jersey Number'] = get_attr(line,1)   # this gets the player Jersey Number
                 except:
                     player['Jersey Number'] = ''
             elif line.lower().startswith('height'):
                 try:
-                    player['Height'] = get_attr(line)   # this gets the player height
+                    player['Height'] = get_attr(line,1)   # this gets the player height
                 except:
                     player['Height'] = ''
             elif line.lower().startswith('weight'):
                 try:
-                    player['Weight'] = get_attr(line)   # this gets the player weight
+                    player['Weight'] = get_attr(line,1)   # this gets the player weight
                 except:
                     player['Weight'] = ''
             elif line.lower().startswith('birthplace'):
                 try:
-                    player['Birthplace'] = get_attr(line)   # this gets the player birthplace
+                    player['Birthplace'] = get_attr(line,1)   # this gets the player birthplace
                 except:
                     player['Birthplace'] = ''
             elif line.lower().startswith('player type'):
                 try:
-                    player['Player Type'] = get_attr(line)   # this gets the player type
+                    player['Player Type'] = get_attr(line,1)   # this gets the player type
                 except:
                     player['Player Type'] = ''
             elif line.lower().startswith('points available') or line.lower().startswith('bank') or line.lower().startswith('total bank'):
                 try:
-                    available = get_attr(line)   # this gets the amount of points the player has available
+                    available = get_attr(line,1)   # this gets the amount of points the player has available
                     #available = available.split()[0].rstrip('Â')
                     player['Points Available'] = available
                 except:
@@ -247,54 +247,54 @@ def get_player_stats(name_url, team, player_type):
             if position != 'G':
                 #Offensive Ratings
                 if line.lower().startswith('screening'):
-                    player['Screening'] = get_attr(line)   # this gets the player Screening
+                    player['Screening'] = get_attr(line,1)   # this gets the player Screening
                 elif line.lower().startswith('getting open'):
-                    player['Getting Open'] = get_attr(line)   # this gets the player Getting Open
+                    player['Getting Open'] = get_attr(line,1)   # this gets the player Getting Open
                 elif line.lower().startswith('passing'):
-                    player['Passing'] = get_attr(line)   # this gets the player Passing
+                    player['Passing'] = get_attr(line,1)   # this gets the player Passing
                 elif line.lower().startswith('puckhandling'):
-                    player['Puckhandling'] = get_attr(line)  # this gets the player Puckhandling
+                    player['Puckhandling'] = get_attr(line,1)  # this gets the player Puckhandling
                 elif line.lower().startswith('shooting accuracy'):
-                    player['Shooting Accuracy'] = get_attr(line)   # this gets the player Shooting Accuracy
+                    player['Shooting Accuracy'] = get_attr(line,1)   # this gets the player Shooting Accuracy
                 elif line.lower().startswith('shooting range'):
-                    player['Shooting Range'] = get_attr(line)   # this gets the player Shooting Range
+                    player['Shooting Range'] = get_attr(line,1)   # this gets the player Shooting Range
                 elif line.lower().startswith('offensive read'):
-                    player['Offensive Read'] = get_attr(line)   # this gets the player Offensive Read
+                    player['Offensive Read'] = get_attr(line,1)   # this gets the player Offensive Read
                 #Defensive Ratings
                 elif line.lower().startswith('checking'):
-                    player['Checking'] = get_attr(line)   # this gets the player Checking
+                    player['Checking'] = get_attr(line,1)   # this gets the player Checking
                 elif line.lower().startswith('hitting'):
-                    player['Hitting'] = get_attr(line)   # this gets the player Hitting
+                    player['Hitting'] = get_attr(line,1)   # this gets the player Hitting
                 elif line.lower().startswith('positioning'):
-                    player['Positioning'] = get_attr(line)   # this gets the player Positioning
+                    player['Positioning'] = get_attr(line,1)   # this gets the player Positioning
                 elif line.lower().startswith('stickchecking'):
-                    player['Stickchecking'] = get_attr(line)   # this gets the player Stickchecking
+                    player['Stickchecking'] = get_attr(line,1)   # this gets the player Stickchecking
                 elif line.lower().startswith('shot blocking'):
-                    player['Shot Blocking'] = get_attr(line)   # this gets the player Shot Blocking
+                    player['Shot Blocking'] = get_attr(line,1)   # this gets the player Shot Blocking
                 elif line.lower().startswith('faceoffs'):
-                    player['Faceoffs'] = get_attr(line)   # this gets the player Faceoffs
+                    player['Faceoffs'] = get_attr(line,1)   # this gets the player Faceoffs
                 elif line.lower().startswith('defensive read'):
-                    player['Defensive Read'] = get_attr(line)   # this gets the player Defensive Read
+                    player['Defensive Read'] = get_attr(line,1)   # this gets the player Defensive Read
                 #Physical Ratings
                 elif line.lower().startswith('acceleration'):
-                    player['Acceleration'] = get_attr(line)   # this gets the player Acceleration
+                    player['Acceleration'] = get_attr(line,1)   # this gets the player Acceleration
                 elif line.lower().startswith('agility'):
-                    player['Agility'] = get_attr(line)   # this gets the player Agility
+                    player['Agility'] = get_attr(line,1)   # this gets the player Agility
                 elif line.lower().startswith('balance'):
-                    player['Balance'] = get_attr(line)   # this gets the player Balance
+                    player['Balance'] = get_attr(line,1)   # this gets the player Balance
                 elif line.lower().startswith('speed'):
-                    player['Speed'] = get_attr(line)   # this gets the player Speed
+                    player['Speed'] = get_attr(line,1)   # this gets the player Speed
                 elif line.lower().startswith('stamina'):
-                    player['Stamina'] = get_attr(line)   # this gets the player Stamina
+                    player['Stamina'] = get_attr(line,1)   # this gets the player Stamina
                 elif line.lower().startswith('strength'):
-                    player['Strength'] = get_attr(line)   # this gets the player Strength
+                    player['Strength'] = get_attr(line,1)   # this gets the player Strength
                 elif line.lower().startswith('fighting'):
-                    player['Fighting'] = get_attr(line)   # this gets the player Fighting
+                    player['Fighting'] = get_attr(line,1)   # this gets the player Fighting
                 #Mental Ratings
                 elif line.lower().startswith('aggression'):
-                    player['Aggression'] = get_attr(line)   # this gets the player Aggression
+                    player['Aggression'] = get_attr(line,1)   # this gets the player Aggression
                 elif line.lower().startswith('bravery'):
-                    player['Bravery'] = get_attr(line)   # this gets the player Bravery
+                    player['Bravery'] = get_attr(line,1)   # this gets the player Bravery
                 elif line.lower().startswith('*determination'):
                     player['Determination'] = '15'  # this gets the player Determination
                 elif line.lower().startswith('*team player'):
@@ -307,32 +307,32 @@ def get_player_stats(name_url, team, player_type):
             elif position == 'G':
                 #goalie ratings
                 if line.lower().startswith('blocker'):
-                    player['Blocker'] = get_attr(line)   # this gets the player Blocker
+                    player['Blocker'] = get_attr(line,1)   # this gets the player Blocker
                 elif line.lower().startswith('glove'):
-                    player['Glove'] = get_attr(line)  # this gets the player Glove
+                    player['Glove'] = get_attr(line,1)  # this gets the player Glove
                 elif line.lower().startswith('passing'):
-                    player['Passing'] = get_attr(line)   # this gets the player Passing
+                    player['Passing'] = get_attr(line,1)   # this gets the player Passing
                 elif line.lower().startswith('poke check'):
-                    player['Poke Check'] = get_attr(line)   # this gets the player Poke Check
+                    player['Poke Check'] = get_attr(line,1)   # this gets the player Poke Check
                 elif line.lower().startswith('positioning'):
-                    player['Positioning'] = get_attr(line)   # this gets the player Positioning
+                    player['Positioning'] = get_attr(line,1)   # this gets the player Positioning
                 elif line.lower().startswith('rebound'):
-                    player['Rebound'] = get_attr(line)   # this gets the player Rebound
+                    player['Rebound'] = get_attr(line,1)   # this gets the player Rebound
                 elif line.lower().startswith('recovery'):
-                    player['Recovery'] = get_attr(line)   # this gets the player Recovery
+                    player['Recovery'] = get_attr(line,1)   # this gets the player Recovery
                 elif line.lower().startswith('puckhandling'):
-                    player['Puckhandling'] = get_attr(line)   # this gets the player Puckhandling
+                    player['Puckhandling'] = get_attr(line,1)   # this gets the player Puckhandling
                 elif line.lower().startswith('low shots'):
-                    player['Low Shots'] = get_attr(line)   # this gets the player Low Shots
+                    player['Low Shots'] = get_attr(line,1)   # this gets the player Low Shots
                 elif line.lower().startswith('reflexes'):
-                    player['Reflexes'] = get_attr(line)   # this gets the player Reflexes
+                    player['Reflexes'] = get_attr(line,1)   # this gets the player Reflexes
                 elif line.lower().startswith('skating'):
-                    player['Skating'] = get_attr(line)   # this gets the player Skating
+                    player['Skating'] = get_attr(line,1)   # this gets the player Skating
                 #mental ratings
                 elif line.lower().startswith('*aggression'):
                     player['Aggression'] = '8'  # this gets the player Aggression
                 elif line.lower().startswith('mental toughness'):
-                    player['Mental Toughness'] = get_attr(line)   # this gets the player Mental Toughness
+                    player['Mental Toughness'] = get_attr(line,1)   # this gets the player Mental Toughness
                 elif line.lower().startswith('*determination'):
                     player['Determination'] = '15'  # this gets the player Determination
                 elif line.lower().startswith('*team player'):
@@ -340,7 +340,7 @@ def get_player_stats(name_url, team, player_type):
                 elif line.lower().startswith('*leadership'):
                     player['Leadership'] = '15'  # this gets the player Leadership
                 elif line.lower().startswith('goalie stamina'):
-                    player['Goalie Stamina'] = get_attr(line)   # this gets the player Goalie Stamina
+                    player['Goalie Stamina'] = get_attr(line,1)   # this gets the player Goalie Stamina
                 elif line.lower().startswith('*professionalism'):
                     player['Professionalism'] = '15' # this gets the player Professionalism
         
@@ -399,12 +399,15 @@ def get_tpe(player,position):
         
     return tpe
 
-def get_attr(line):
+def get_attr(line,pos):
     try:
-        out = line.lower().split(':').split(' ')#[pos].strip()
-        out = out[len(out)-1].strip()
+        out = line.lower().split(':')[pos].strip()
     except:
-        out = None
+        try:
+            out = line.lower().split(' ')
+            out = out[len(out)-1].strip()
+        except:
+            out = None
     return out
 
 def main():
