@@ -117,7 +117,7 @@ def get_player_urls(team_roster_url):
 
 def get_player_stats(name_url, team, player_type):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
-    player = dict.fromkeys(['Team', 'Player Type', 'Player URL', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
+    player = dict.fromkeys(['Team', 'Player Type', 'Player URL', 'Draft Class', 'Draft Class Numeric', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
                             'Player Render', 'Jersey Number', 'Height', 'Weight', 'Birthplace', 'Player Type',
                             'Strengths', 'Weakness', 'Points Available', 
                             'Screening', 'Getting Open', 'Passing', 'Puckhandling', 'Shooting Accuracy', 'Shooting Range', 'Offensive Read',
@@ -160,6 +160,7 @@ def get_player_stats(name_url, team, player_type):
         position = 'G'
 
     draft_class = 'S' + position_and_class.split()[0].strip('[').strip(']').strip('S').strip('(').strip(')')
+    draft_class_num = position_and_class.split()[0].strip('[').strip(']').strip('S').strip('(').strip(')')
     try:
         tpe = soup.find_all('td', 'thead')[1].small.text
         if len(tpe.split()) == 3:
@@ -173,6 +174,7 @@ def get_player_stats(name_url, team, player_type):
     post_text = post.text.split('\n') # split the text from the body up into rows for easy iteration
 
     player['Draft Class'] = draft_class
+    player['Draft Class Numeric'] = draft_class_num.strip('S')
     player['Listed TPE'] = tpe
     player['Played Position'] = position
 
@@ -418,6 +420,6 @@ def main():
     shl_prospects_csv = "prospects-2020-5-12.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
     get_shl_players(url_file, shl_players_csv)
-    #get_shl_prospects(url_file, shl_prospects_csv)
+    get_shl_prospects(url_file, shl_prospects_csv)
 
 main()
