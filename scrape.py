@@ -127,7 +127,7 @@ def get_player_stats(name_url, team, player_type):
                             'Aggression','Bravery','Determination','Team Player','Leadership','Temperament','Professionalism',
                             'Blocker','Glove','Passing','Poke Check','Positioning','Rebound','Recovery','Puckhandling','Low Shots','Reflexes','Skating',
                             'Mental Toughness','Goalie Stamina',
-                            'TPE'
+                            'Listed TPE','Applied TPE','Total TPE'
                            ])
     player['Team'] = team
     player['Player Type'] = player_type
@@ -138,6 +138,7 @@ def get_player_stats(name_url, team, player_type):
     soup = BeautifulSoup(player_page.content, 'html.parser')
 
     # Get the Position, TPE, and Draft Class
+    print(soup.find_all('td', 'thead')[1].strong.text)
     position_and_class = soup.find_all('td', 'thead')[1].strong.text
     tpe = str()
     draft_class = str()
@@ -172,7 +173,7 @@ def get_player_stats(name_url, team, player_type):
     post_text = post.text.split('\n') # split the text from the body up into rows for easy iteration
 
     player['Draft Class'] = draft_class
-    player['TPE'] = tpe
+    player['Listed TPE'] = tpe
     player['Played Position'] = position
 
     for l in post_text:
@@ -344,39 +345,56 @@ def get_player_stats(name_url, team, player_type):
                     player['Goalie Stamina'] = get_attr(line,1)   # this gets the player Goalie Stamina
                 elif line.startswith('*Professionalism'):
                     player['Professionalism'] = '15' # this gets the player Professionalism
+        
+    player['Applied TPE'] = get_tpe(player,player['Played Position'])
+    player['Total TPE'] = get_tpe(player,player['Played Position']) + int(player['Points Available'])
+    
     print(player['Team'],' - ',player['First Name'],' ',player['Last Name'],' - ',player['Played Position'])
     return player  # return the player
 
-def get_player_tpe(page, player_dict):
-    """calculate the total tpe based on points given. Takes in a page and player dict as backup"""
-    position_and_class = page.strong.text
-    tpe = str()
-    draft_class = str()
-    position = str()
+def get_tpe(player,position):
+    if position != 'G':
+        attr_set = ['Screening', 'Getting Open', 'Passing', 'Puckhandling', 'Shooting Accuracy', 'Shooting Range', 'Offensive Read',
+                    'Checking','Hitting','Stickchecking','Positioning','Shot Blocking','Faceoffs','Defensive Read',
+                    'Acceleration','Agility','Balance','Speed','Strength','Fighting',
+                    'Aggression','Bravery',
+                    #next week take stamina out of this calc
+                    'Stamina'
+                    ]
+    elif position == 'G':
+        attr_set = ['Positioning','Passing','Poke Check','Blocker','Glove','Rebound','Recovery','Puckhandling'
+                      ,'Low Shots','Reflexes','Skating','Mental Toughness','Goalie Stamina'
 
-    if position_and_class.__contains__(' C ') or position_and_class.__contains__(' Center ') or position_and_class.__contains__(' CENTER '):
-        position = 'C'
-    if position_and_class.__contains__(' LW ') or position_and_class.__contains__(' Left Wing ') or position_and_class.__contains__(' LEFT WING '):
-        position = 'LW'
-    if position_and_class.__contains__(' RW ') or position_and_class.__contains__(' Right Wing ') or position_and_class.__contains__(' RIGHT WING '):
-        position = 'RW'
-    if position_and_class.__contains__(' D ') or position_and_class.__contains__(' Defense ') or position_and_class.__contains__(' DEFENSE '):
-        position = 'D'
-    if position_and_class.__contains__(' G ') or position_and_class.__contains__(' Goalie ') or position_and_class.__contains__(' GOALIE '):
-        position = 'G'
+                    ]
 
-    draft_class = position_and_class.split()[0].strip('[').strip(']')
-    try:
-        tpe = page.small.text
-        if len(tpe.split()) == 2:
-            tpe = tpe.split()[1]
-        else:
-            print(len(tpe.split()))
-    except:
-        tpe = 'Calculate it yourself!'
-
-    print(position_and_class)
-    return tpe, draft_class, position
+    tpe = 0
+    for a in attr_set:
+        if int(player[a]) > 17:
+            tpe += (int(player[a]) - 17)*40 + (17 - 15)*25 + (15 - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+        elif int(player[a]) > 15:
+            tpe += (int(player[a]) - 15)*25 + (15 - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+        elif int(player[a]) > 13:
+            tpe += (int(player[a]) - 13)*15 + (13 - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+        elif int(player[a]) > 11:
+            tpe += (int(player[a]) - 11)*8 + (11 - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+        elif int(player[a]) > 9:
+            tpe += (int(player[a]) - 9)*5 + (9 - 7)*2 + (7 - 5)*1
+        elif int(player[a]) > 7:
+            tpe += (int(player[a]) - 7)*2 + (7 - 5)*1
+        elif int(player[a]) > 5:
+            tpe += (int(player[a]) - 5)*1
+        
+    ####### NEXT WEEK ADD THIS BLOCK BACK IN ######    
+        
+    #if int(player['Stamina']) > 17:
+    #    tpe += (int(player['Stamina']) - 17)*40 + (17 - 15)*25 + (15 - 11)*8
+    #elif int(player['Stamina']) > 15:
+    #    tpe += (int(player['Stamina']) - 15)*25 + (15 - 11)*8
+    #elif int(player['Stamina']) > 11:
+    #    tpe += (int(player['Stamina']) - 11)*8
+    #print('Stamina',player['Stamina'],tpe)
+        
+    return tpe
 
 def get_attr(line,pos):
     try:
