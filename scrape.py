@@ -40,7 +40,7 @@ def get_smjhl_players(url_file, smjhl_players_csv):
     for team in team_url_list:  # For each team in the list
         player_url_list = get_player_urls(team[1])  # get each player page URL
         for player in player_url_list:  # for each player in player_url_list
-            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'Prospect'))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     csv_file = smjhl_players_csv
     csv_columns = player_dict_list[0].keys()
@@ -58,7 +58,7 @@ def get_shl_players(url_file, shl_players_csv):
     for team in team_url_list:  # For each team in the list
         player_url_list = get_player_urls(team[1])  # get each player page URL
         for player in player_url_list:  # for each player in player_url_list
-            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'SHL'))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     csv_file = shl_players_csv
     csv_columns = player_dict_list[0].keys()
@@ -75,7 +75,7 @@ def get_shl_prospects(url_file, shl_prospects_csv):
     for team in prospect_url_list:  # For each team in the list
         player_url_list = get_player_urls(team[1])  # get each player page URL
         for player in player_url_list:  # for each player in player_url_list
-            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0]))
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'Prospect'))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     csv_file = shl_prospects_csv
     csv_columns = player_dict_list[0].keys()
@@ -116,9 +116,9 @@ def get_player_urls(team_roster_url):
     return return_list
 
 
-def get_player_stats(name_url, team):
+def get_player_stats(name_url, team, player_type):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
-    player = dict.fromkeys(['Team', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
+    player = dict.fromkeys(['Team', 'Player Type', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
                             'Player Render', 'Jersey Number', 'Height', 'Weight', 'Birthplace', 'Player Type',
                             'Strengths', 'Weakness', 'Points Available', 
                             'Screening', 'Getting Open', 'Passing', 'Puckhandling', 'Shooting Accuracy', 'Shooting Range', 'Offensive Read',
@@ -130,6 +130,7 @@ def get_player_stats(name_url, team):
                             'TPE'
                            ])
     player['Team'] = team
+    player['Player Type'] = player_type
     user_agent = random.choice(user_agent_list)
     print(user_agent)
     headers = {'User-Agent': user_agent}
