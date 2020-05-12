@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import os
 os.chdir(r'C:\projects\shl_scraper')
 
-
 user_agent_list = [
    # Chrome
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
@@ -118,7 +117,7 @@ def get_player_urls(team_roster_url):
 
 def get_player_stats(name_url, team, player_type):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
-    player = dict.fromkeys(['Team', 'Player Type', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
+    player = dict.fromkeys(['Team', 'Player Type', 'Player URL', 'Draft Class', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
                             'Player Render', 'Jersey Number', 'Height', 'Weight', 'Birthplace', 'Player Type',
                             'Strengths', 'Weakness', 'Points Available', 
                             'Screening', 'Getting Open', 'Passing', 'Puckhandling', 'Shooting Accuracy', 'Shooting Range', 'Offensive Read',
@@ -129,6 +128,7 @@ def get_player_stats(name_url, team, player_type):
                             'Mental Toughness','Goalie Stamina',
                             'Listed TPE','Applied TPE','Total TPE'
                            ])
+    player['Player URL'] = name_url
     player['Team'] = team
     player['Player Type'] = player_type
     user_agent = random.choice(user_agent_list)
@@ -235,7 +235,7 @@ def get_player_stats(name_url, team, player_type):
                     player['Player Type'] = get_attr(line,1)   # this gets the player type
                 except:
                     player['Player Type'] = ''
-            elif line.lower().startswith('points available') or line.lower().startswith('bank'):
+            elif line.lower().startswith('points available') or line.lower().startswith('bank') or line.lower().startswith('total bank'):
                 try:
                     available = get_attr(line,1)   # this gets the amount of points the player has available
                     available = available.split()[0].rstrip('Â')
@@ -298,8 +298,6 @@ def get_player_stats(name_url, team, player_type):
                 elif line.lower().startswith('*determination'):
                     player['Determination'] = '15'  # this gets the player Determination
                 elif line.lower().startswith('*team player'):
-                    player['Team Player'] = '15'  # this gets the player Team Player
-                elif line.lower().startswith('*Team Player'):
                     player['Team Player'] = '15'  # this gets the player Team Player
                 elif line.lower().startswith('*temperament'):
                     player['Temperament'] = '15'  # this gets the player Temperament
@@ -403,24 +401,24 @@ def get_attr(line,pos):
         out = line.lower().split(':')[pos].strip()
     except:
         try:
-            out = line.lower().split(' ')[pos].strip()
+            out = line.lower().split(';')[pos].strip()
         except:
             try:
-                out = line.lower().split(';')[pos].strip()
+                out = line.lower().split('-')[pos].strip()
             except:
                 try:
-                    out = line.lower().split('-')[pos].strip()
+                    out = line.lower().split(' ')
+                    out = out[len(out)-1]
                 except:
                     out = None
     return out
 
-
 def main():
     """main"""
     url_file = "roster_urls.json"
-    smjhl_players_csv = "smjhl-2020-5-11.csv"
-    shl_players_csv = "shl-2020-5-11.csv"
-    shl_prospects_csv = "prospects-2020-5-11.csv"
+    smjhl_players_csv = "smjhl-2020-5-12.csv"
+    shl_players_csv = "shl-2020-5-12.csv"
+    shl_prospects_csv = "prospects-2020-5-12.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
     get_shl_players(url_file, shl_players_csv)
     get_shl_prospects(url_file, shl_prospects_csv)
