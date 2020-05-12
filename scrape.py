@@ -118,7 +118,7 @@ def get_player_urls(team_roster_url):
 def get_player_stats(name_url, team, player_type):
     """Use the given url to find and get all of the stats. Returns a dictionary"""
     player = dict.fromkeys(['Team', 'Player Type', 'Player URL', 'Draft Class', 'Draft Class Numeric', 'First Name', 'Last Name', 'Position', 'Shoots', 'Recruited by',
-                            'Player Render', 'Jersey Number', 'Height', 'Weight', 'Birthplace', 'Player Type',
+                            'Player Render', 'Jersey Number', 'Height', 'Weight', 'Birthplace', 'Player Role',
                             'Strengths', 'Weakness', 'Points Available', 
                             'Screening', 'Getting Open', 'Passing', 'Puckhandling', 'Shooting Accuracy', 'Shooting Range', 'Offensive Read',
                             'Checking','Hitting','Stickchecking','Shot Blocking','Faceoffs','Defensive Read',
@@ -234,9 +234,9 @@ def get_player_stats(name_url, team, player_type):
                     player['Birthplace'] = ''
             elif line.lower().startswith('player type'):
                 try:
-                    player['Player Type'] = get_attr(line,1)   # this gets the player type
+                    player['Player Role'] = get_attr(line,1)   # this gets the player type
                 except:
-                    player['Player Type'] = ''
+                    player['Player Role'] = ''
             elif line.lower().startswith('points available') or line.lower().startswith('bank') or line.lower().startswith('total bank'):
                 try:
                     available = get_attr(line,1)   # this gets the amount of points the player has available
