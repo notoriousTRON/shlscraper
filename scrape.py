@@ -143,20 +143,16 @@ def get_player_stats(name_url, team, player_type):
     tpe = str()
     draft_class = str()
     position = str()
-    if position_and_class.__contains__(' C ') or position_and_class.__contains__(
-            ' Center ') or position_and_class.__contains__(' CENTER '):
+    if position_and_class.__contains__(' C ') or position_and_class.lower().__contains__('center') or position_and_class.__contains__(' C-'):
         position = 'C'
-    if position_and_class.__contains__(' LW ') or position_and_class.__contains__(
-            ' Left Wing ') or position_and_class.__contains__(' LEFT WING '):
+    if position_and_class.__contains__(' LW ') or position_and_class.lower().__contains__('left wing') or position_and_class.__contains__(' LW-'):
         position = 'LW'
-    if position_and_class.__contains__(' RW ') or position_and_class.__contains__(
-            ' Right Wing ') or position_and_class.__contains__(' RIGHT WING '):
+    if position_and_class.__contains__(' RW ') or position_and_class.lower().__contains__('right wing') or position_and_class.__contains__(' RW-'):
         position = 'RW'
-    if position_and_class.__contains__(' D ') or position_and_class.__contains__(
-            ' Defense ') or position_and_class.__contains__(' DEFENSE '):
+    if position_and_class.__contains__(' D ') or position_and_class.lower().__contains__('defense') or position_and_class.__contains__(' D-'):
         position = 'D'
     if position_and_class.__contains__(' G ') or position_and_class.__contains__(
-            ' Goalie ') or position_and_class.__contains__(' GOALIE '):
+            ' Goalie ') or position_and_class.lower().__contains__('goalie') or position_and_class.__contains__(' G-'):
         position = 'G'
 
     draft_class = position_and_class.split()[0].strip('[').strip(']').strip('(').strip(')')
