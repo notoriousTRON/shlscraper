@@ -143,7 +143,7 @@ def get_player_stats(name_url, team, player_type):
     tpe = str()
     draft_class = str()
     position = str()
-    if position_and_class.__contains__(' C ') or position_and_class.lower().__contains__('center') or position_and_class.__contains__(' C-'):
+    if position_and_class.__contains__(' C ') or position_and_class.lower().__contains__('center') or position_and_class.__contains__(' C-') or position_and_class.lower().__contains__('centre'): 
         position = 'C'
     if position_and_class.__contains__(' LW ') or position_and_class.lower().__contains__('left wing') or position_and_class.__contains__(' LW-'):
         position = 'LW'
