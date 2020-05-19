@@ -357,8 +357,8 @@ def get_tpe(player,position):
                     'Checking','Hitting','Stickchecking','Positioning','Shot Blocking','Faceoffs','Defensive Read',
                     'Acceleration','Agility','Balance','Speed','Strength','Fighting',
                     'Aggression','Bravery',
-                    #next week take stamina out of this calc
-                    'Stamina'
+                    #stamina is calculated differently than the other attributes since it defaults to 11
+                    #'Stamina'
                     ]
     elif position == 'G':
         attr_set = ['Positioning','Passing','Poke Check','Blocker','Glove','Rebound','Recovery','Puckhandling'
@@ -383,15 +383,15 @@ def get_tpe(player,position):
             elif int(player[a]) > 5:
                 tpe += (int(player[a]) - 5)*1
 
-        ####### NEXT WEEK ADD THIS BLOCK BACK IN ######    
+        ####### This block calculates stamina differently than the other attributes because it defaults to 11 instead of 5 ######    
 
-        #if int(player['Stamina']) > 17:
-        #    tpe += (int(player['Stamina']) - 17)*40 + (17 - 15)*25 + (15 - 11)*8
-        #elif int(player['Stamina']) > 15:
-        #    tpe += (int(player['Stamina']) - 15)*25 + (15 - 11)*8
-        #elif int(player['Stamina']) > 11:
-        #    tpe += (int(player['Stamina']) - 11)*8
-        #print('Stamina',player['Stamina'],tpe)
+        if int(player['Stamina']) > 17:
+            tpe += (int(player['Stamina']) - 17)*40 + (17 - 15)*25 + (15 - 11)*8
+        elif int(player['Stamina']) > 15:
+            tpe += (int(player['Stamina']) - 15)*25 + (15 - 11)*8
+        elif int(player['Stamina']) > 11:
+            tpe += (int(player['Stamina']) - 11)*8
+        print('Stamina',player['Stamina'],tpe)
     except:
         tpe = 0
         
