@@ -391,7 +391,7 @@ def get_tpe(player,position):
             tpe += (int(player['Stamina']) - 15)*25 + (15 - 11)*8
         elif int(player['Stamina']) > 11:
             tpe += (int(player['Stamina']) - 11)*8
-        print('Stamina',player['Stamina'],tpe)
+        #print('Stamina',player['Stamina'],tpe)
     except:
         tpe = 0
         
@@ -411,9 +411,9 @@ def get_attr(line,pos):
 def main():
     """main"""
     url_file = "roster_urls.json"
-    smjhl_players_csv = "smjhl-2020-5-12.csv"
-    shl_players_csv = "shl-2020-5-12.csv"
-    shl_prospects_csv = "prospects-2020-5-12.csv"
+    smjhl_players_csv = "smjhl-2020-5-19.csv"
+    shl_players_csv = "shl-2020-5-19.csv"
+    shl_prospects_csv = "prospects-2020-5-19.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
     get_shl_players(url_file, shl_players_csv)
     get_shl_prospects(url_file, shl_prospects_csv)
