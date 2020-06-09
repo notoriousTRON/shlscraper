@@ -297,6 +297,8 @@ def get_player_stats(name_url, team, player_type):
                     player['Determination'] = '15'  # this gets the player Determination
                 elif line.lower().startswith('*team player'):
                     player['Team Player'] = '15'  # this gets the player Team Player
+                elif line.lower().startswith('*leadership'):
+                    player['Leadership'] = '15'  # this gets the player Leadership
                 elif line.lower().startswith('*temperament'):
                     player['Temperament'] = '15'  # this gets the player Temperament
                 elif line.lower().startswith('*professionalism'):
@@ -385,12 +387,14 @@ def get_tpe(player,position):
 
         ####### This block calculates stamina differently than the other attributes because it defaults to 11 instead of 5 ######    
 
-        if int(player['Stamina']) > 17:
+        if position != 'G' and int(player['Stamina']) > 17:
             tpe += (int(player['Stamina']) - 17)*40 + (17 - 15)*25 + (15 - 11)*8
-        elif int(player['Stamina']) > 15:
+        elif position != 'G' and int(player['Stamina']) > 15:
             tpe += (int(player['Stamina']) - 15)*25 + (15 - 11)*8
-        elif int(player['Stamina']) > 11:
+        elif position != 'G' and int(player['Stamina']) > 11:
             tpe += (int(player['Stamina']) - 11)*8
+        else:
+            tpe += 0
         #print('Stamina',player['Stamina'],tpe)
     except:
         tpe = 0
@@ -411,9 +415,9 @@ def get_attr(line,pos):
 def main():
     """main"""
     url_file = "roster_urls.json"
-    smjhl_players_csv = "smjhl-2020-5-19.csv"
-    shl_players_csv = "shl-2020-5-19.csv"
-    shl_prospects_csv = "prospects-2020-5-19.csv"
+    smjhl_players_csv = "smjhl-2020-6-8.csv"
+    shl_players_csv = "shl-2020-6-8.csv"
+    shl_prospects_csv = "prospects-2020-6-8.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
     get_shl_players(url_file, shl_players_csv)
     get_shl_prospects(url_file, shl_prospects_csv)
