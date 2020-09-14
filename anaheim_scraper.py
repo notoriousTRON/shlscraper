@@ -3,8 +3,6 @@ from bs4 import BeautifulSoup
 import os
 os.chdir(r'C:\projects\shl_scraper')
 
-refresh_date = "2020-9-14"
-
 user_agent_list = [
    # Chrome
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
@@ -41,10 +39,7 @@ def get_smjhl_players(url_file, smjhl_players_csv):
     for team in team_url_list:  # For each team in the list
         player_url_list = get_player_urls(team[1])  # get each player page URL
         for player in player_url_list:  # for each player in player_url_list
-            try:
-                player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'Prospect'))
-            except:
-                print("couldn't find player thread")
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'Prospect'))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     csv_file = smjhl_players_csv
     csv_columns = player_dict_list[0].keys()
@@ -62,10 +57,7 @@ def get_shl_players(url_file, shl_players_csv):
     for team in team_url_list:  # For each team in the list
         player_url_list = get_player_urls(team[1])  # get each player page URL
         for player in player_url_list:  # for each player in player_url_list
-            try:
-                player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'SHL'))
-            except:
-                print("couldn't find player thread")
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'SHL'))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     csv_file = shl_players_csv
     csv_columns = player_dict_list[0].keys()
@@ -80,13 +72,9 @@ def get_shl_prospects(url_file, shl_prospects_csv):
     prospect_url_list = get_roster_url(url_file, 'Prospects')
     player_dict_list = list()  # list that will hold all of the player info dicts to be put into a csv
     for team in prospect_url_list:  # For each team in the list
-        print(team)
         player_url_list = get_player_urls(team[1])  # get each player page URL
         for player in player_url_list:  # for each player in player_url_list
-            try:
-                player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'Prospect'))
-            except:
-                print("couldn't find player thread")
+            player_dict_list.append(get_player_stats('https://www.simulationhockey.com/' + player, team[0],'Prospect'))
     # look into using csv dictwriter.writerows() to write the list of dictionaries into the csv file
     csv_file = shl_prospects_csv
     csv_columns = player_dict_list[0].keys()
@@ -428,13 +416,7 @@ def get_attr(line,pos):
 
 def main():
     """main"""
-    url_file = "roster_urls.json"
-    #url_file = "roster_urls_tor.json"
-    smjhl_players_csv = "smjhl-"+refresh_date+".csv"
-    shl_players_csv = "shl-"+refresh_date+".csv"
-    shl_prospects_csv = "prospects-"+refresh_date+".csv"
+    url_file = "roster_urls_ana.json"
+    smjhl_players_csv = "ana_roster-7-13.csv"
     get_smjhl_players(url_file, smjhl_players_csv)
-    get_shl_players(url_file, shl_players_csv)
-    get_shl_prospects(url_file, shl_prospects_csv)
-
 main()
