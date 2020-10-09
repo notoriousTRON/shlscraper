@@ -1,0 +1,8 @@
+__pycache__
+*.csv
+*.xlsx
+*.xls
+*.txt
+\archive_prospect_files
+\archive_shl_files
+\archive_smjhl_files
